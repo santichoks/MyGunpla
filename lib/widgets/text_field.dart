@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 
 class MyTextField extends StatefulWidget {
-  const MyTextField({super.key, required this.label, required this.icon, required this.color});
+  const MyTextField({
+    super.key,
+    required this.label,
+    required this.color,
+    required this.icon,
+    required this.obscureText,
+    required this.onChange,
+  });
 
   final String label;
   final Color color;
   final IconData icon;
+  final bool obscureText;
+  final void Function(String value) onChange;
 
   @override
   State<MyTextField> createState() => _MyTextFieldState();
@@ -46,6 +55,10 @@ class _MyTextFieldState extends State<MyTextField> {
             : null,
       ),
       child: TextField(
+        obscureText: widget.obscureText ? true : false,
+        enableSuggestions: widget.obscureText ? false : true,
+        autocorrect: widget.obscureText ? false : true,
+        onChanged: widget.onChange,
         cursorHeight: 18,
         focusNode: _focus,
         style: TextStyle(

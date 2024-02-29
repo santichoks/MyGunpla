@@ -17,11 +17,11 @@ class _SignUpState extends State<SignUp> {
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              icon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18),
+              icon: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 18),
                 child: Icon(
                   Icons.keyboard_backspace,
-                  color: Colors.greenAccent[400],
+                  color: Color(0xFF0079FF),
                   size: 34,
                 ),
               ),
@@ -55,32 +55,42 @@ class _SignUpState extends State<SignUp> {
                     const SizedBox(height: 34),
                     MyTextField(
                       label: "FIRST NAME",
-                      color: Colors.greenAccent[400]!,
+                      color: const Color(0xFF0079FF),
                       icon: Icons.person_outlined,
+                      obscureText: false,
+                      onChange: (value) {},
                     ),
                     const SizedBox(height: 24),
                     MyTextField(
                       label: "LAST NAME",
-                      color: Colors.greenAccent[400]!,
+                      color: const Color(0xFF0079FF),
                       icon: Icons.person_outlined,
+                      obscureText: false,
+                      onChange: (value) {},
                     ),
                     const SizedBox(height: 24),
                     MyTextField(
                       label: "EMAIL",
-                      color: Colors.greenAccent[400]!,
+                      color: const Color(0xFF0079FF),
                       icon: Icons.mail_outline,
+                      obscureText: false,
+                      onChange: (value) {},
                     ),
                     const SizedBox(height: 24),
                     MyTextField(
                       label: "PASSWORD",
-                      color: Colors.greenAccent[400]!,
+                      color: const Color(0xFF0079FF),
                       icon: Icons.lock_outline,
+                      obscureText: true,
+                      onChange: (value) {},
                     ),
                     const SizedBox(height: 24),
                     MyTextField(
                       label: "CONFIRM PASSWORD",
-                      color: Colors.greenAccent[400]!,
+                      color: const Color(0xFF0079FF),
                       icon: Icons.lock_outline,
+                      obscureText: true,
+                      onChange: (value) {},
                     ),
                     const SizedBox(height: 34),
                     SizedBox(
@@ -89,7 +99,7 @@ class _SignUpState extends State<SignUp> {
                       child: TextButton(
                         onPressed: () {},
                         style: TextButton.styleFrom(
-                          backgroundColor: Colors.greenAccent[400],
+                          backgroundColor: const Color(0xFF0079FF),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),

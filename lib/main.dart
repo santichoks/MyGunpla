@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_gunpla/pages/sign_in/sign_in.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_gunpla/blocs/sign_in.dart';
+import 'package:my_gunpla/pages/sign_in.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,8 +12,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: SignIn(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SignInBloc>(
+          create: (BuildContext context) => SignInBloc(),
+        ),
+      ],
+      child: const MaterialApp(
+        home: SignIn(),
+      ),
     );
   }
 }
