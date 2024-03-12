@@ -18,7 +18,7 @@ class MyLoading extends StatelessWidget {
         if (isLoading)
           const Center(
             child: CircularProgressIndicator(
-              color: Color(0xFF0079FF),
+              color: Colors.white,
             ),
           ),
       ],

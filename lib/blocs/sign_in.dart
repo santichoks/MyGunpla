@@ -1,43 +1,131 @@
+import 'dart:convert';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_gunpla/blocs/common.dart';
+import 'package:http/http.dart' as http;
+import 'package:my_gunpla/common/constants.dart';
+import 'package:my_gunpla/common/storage.dart';
 
-class SignInBloc extends Bloc<MyEvent, MyState> {
-  SignInBloc() : super(Initialize()) {
-    on<OnChangeSignInEmailEvent>(_onChangeEmail);
-    on<OnChangeSignInPasswordEvent>(_onChangePassword);
+class SignInBloc extends Bloc<SignInEvent, SignInState> {
+  SignInBloc() : super(SignInState()) {
+    on<OnChangeEmailSignInEvent>(_onChangeEmail);
+    on<OnChangePasswordSignInEvent>(_onChangePassword);
+    on<OnClickLoginSignInEvent>(_onClickLogin);
   }
 
-  void _onChangeEmail(OnChangeSignInEmailEvent event, Emitter<MyState> emit) {
-    emit(SignInState().copyWith(email: event.email));
+  void _onChangeEmail(OnChangeEmailSignInEvent event, Emitter<SignInState> emit) {
+    emit(state.copyWith(email: event.email));
   }
 
-  void _onChangePassword(OnChangeSignInPasswordEvent event, Emitter<MyState> emit) {
-    emit(SignInState().copyWith(password: event.password));
+  void _onChangePassword(OnChangePasswordSignInEvent event, Emitter<SignInState> emit) {
+    emit(state.copyWith(password: event.password));
+  }
+
+  void _onClickLogin(OnClickLoginSignInEvent event, Emitter<SignInState> emit) async {
+    final String email = event.email;
+    final String password = event.password;
+    emit(state.copyWith(isTouch: true));
+    if (email.isEmpty || password.isEmpty) {
+      return;
+    }
+
+    emit(SignInLoadingState());
+
+    final url = Uri.http("localhost:8080", "login");
+    final res = await http.post(
+      url,
+      body: {
+        "email": email,
+        "password": password,
+      },
+    );
+
+    final cookies = res.headers['set-cookie'];
+    if (res.statusCode == 200 && cookies != null) {
+      String accessToken = "";
+      String refreshToken = "";
+
+      RegExp regExp = RegExp(r"accessToken=([^;]+)");
+      Match? match = regExp.firstMatch(cookies);
+      if (match != null) {
+        accessToken = match.group(1)!;
+      }
+
+      regExp = RegExp(r"refreshToken=([^;]+)");
+      match = regExp.firstMatch(cookies);
+      if (match != null) {
+        refreshToken = match.group(1)!;
+      }
+
+      await Storage.setString(Constants.ACCESS_TOKEN, accessToken);
+      await Storage.setString(Constants.REFRESH_TOKEN, refreshToken);
+
+      emit(SignInSuccessState());
+
+      return;
+    }
+
+    emit(SignInErrorState.fromJson(jsonDecode(res.body)));
+    emit(state.copyWith(email: email, password: password, isTouch: true));
   }
 }
 
-class OnChangeSignInEmailEvent extends MyEvent {
+abstract class SignInEvent {}
+
+class OnChangeEmailSignInEvent extends SignInEvent {
   final String email;
 
-  OnChangeSignInEmailEvent({required this.email});
+  OnChangeEmailSignInEvent({required this.email});
 }
 
-class OnChangeSignInPasswordEvent extends MyEvent {
+class OnChangePasswordSignInEvent extends SignInEvent {
   final String password;
 
-  OnChangeSignInPasswordEvent({required this.password});
+  OnChangePasswordSignInEvent({required this.password});
 }
 
-class SignInState extends MyState {
+class OnClickLoginSignInEvent extends SignInEvent {
   final String email;
   final String password;
 
-  SignInState({this.email = "", this.password = ""});
+  OnClickLoginSignInEvent({required this.email, required this.password});
+}
 
-  SignInState copyWith({String? email, String? password}) {
+class SignInState {
+  final String email;
+  final String password;
+  final bool isTouch;
+
+  SignInState({
+    this.email = "",
+    this.password = "",
+    this.isTouch = false,
+  });
+
+  SignInState copyWith({
+    String? email,
+    String? password,
+    bool? isTouch,
+  }) {
     return SignInState(
       email: email ?? this.email,
       password: password ?? this.password,
+      isTouch: isTouch ?? this.isTouch,
+    );
+  }
+}
+
+class SignInLoadingState extends SignInState {}
+
+class SignInSuccessState extends SignInState {}
+
+class SignInErrorState extends SignInState {
+  final String message;
+
+  SignInErrorState({required this.message});
+
+  factory SignInErrorState.fromJson(Map<String, dynamic> json) {
+    return SignInErrorState(
+      message: json["message"],
     );
   }
 }
