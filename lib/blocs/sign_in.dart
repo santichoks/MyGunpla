@@ -64,7 +64,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       return;
     }
 
-    emit(SignInErrorState.fromJson(jsonDecode(res.body)));
+    emit(SignInErrorState.parse(jsonDecode(res.body)));
     emit(state.copyWith(email: email, password: password, isTouch: true));
   }
 }
@@ -123,7 +123,7 @@ class SignInErrorState extends SignInState {
 
   SignInErrorState({required this.message});
 
-  factory SignInErrorState.fromJson(Map<String, dynamic> json) {
+  factory SignInErrorState.parse(Map<String, dynamic> json) {
     return SignInErrorState(
       message: json["message"],
     );
