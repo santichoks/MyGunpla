@@ -56,7 +56,7 @@ class _SignInState extends State<SignIn> {
                           const SizedBox(height: 34),
                           MyTextField(
                             label: "EMAIL",
-                            color: const Color(0xFF0079FF),
+                            color: Colors.blue[900]!,
                             icon: Icons.mail_outline,
                             isTouch: state.isTouch,
                             onChange: (value) {
@@ -65,7 +65,7 @@ class _SignInState extends State<SignIn> {
                           ),
                           MyTextField(
                             label: "PASSWORD",
-                            color: const Color(0xFF0079FF),
+                            color: Colors.blue[900]!,
                             icon: Icons.lock_outline,
                             obscureText: true,
                             isTouch: state.isTouch,
@@ -98,7 +98,7 @@ class _SignInState extends State<SignIn> {
                                     );
                               },
                               style: TextButton.styleFrom(
-                                backgroundColor: const Color(0xFF0079FF),
+                                backgroundColor: Colors.blue[900],
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),

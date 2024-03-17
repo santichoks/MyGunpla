@@ -65,7 +65,7 @@ class _SignUpState extends State<SignUp> {
                           const SizedBox(height: 34),
                           MyTextField(
                             label: "FIRST NAME",
-                            color: const Color(0xFF0079FF),
+                            color: Colors.blue[900]!,
                             icon: Icons.person_outlined,
                             isTouch: state.isTouch,
                             onChange: (value) {
@@ -74,7 +74,7 @@ class _SignUpState extends State<SignUp> {
                           ),
                           MyTextField(
                             label: "LAST NAME",
-                            color: const Color(0xFF0079FF),
+                            color: Colors.blue[900]!,
                             icon: Icons.person_outlined,
                             isTouch: state.isTouch,
                             onChange: (value) {
@@ -83,7 +83,7 @@ class _SignUpState extends State<SignUp> {
                           ),
                           MyTextField(
                             label: "EMAIL",
-                            color: const Color(0xFF0079FF),
+                            color: Colors.blue[900]!,
                             icon: Icons.mail_outline,
                             isTouch: state.isTouch,
                             onChange: (value) {
@@ -92,7 +92,7 @@ class _SignUpState extends State<SignUp> {
                           ),
                           MyTextField(
                             label: "PASSWORD",
-                            color: const Color(0xFF0079FF),
+                            color: Colors.blue[900]!,
                             icon: Icons.lock_outline,
                             obscureText: true,
                             isTouch: state.isTouch,
@@ -102,7 +102,7 @@ class _SignUpState extends State<SignUp> {
                           ),
                           MyTextField(
                             label: "CONFIRM PASSWORD",
-                            color: const Color(0xFF0079FF),
+                            color: Colors.blue[900]!,
                             icon: Icons.lock_outline,
                             obscureText: true,
                             isTouch: state.isTouch,
@@ -119,7 +119,7 @@ class _SignUpState extends State<SignUp> {
                                 context.read<SignUpBloc>().add(OnClickCreateAccountSignUpEvent());
                               },
                               style: TextButton.styleFrom(
-                                backgroundColor: const Color(0xFF0079FF),
+                                backgroundColor: Colors.blue[900],
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),

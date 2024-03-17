@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_gunpla/blocs/layout.dart';
 import 'package:my_gunpla/common/constants.dart';
 import 'package:my_gunpla/common/storage.dart';
+import 'package:my_gunpla/widgets/image_slider.dart';
 import 'package:my_gunpla/widgets/loading.dart';
 
 class Layout extends StatefulWidget {
@@ -13,139 +15,341 @@ class Layout extends StatefulWidget {
 }
 
 class _LayoutState extends State<Layout> {
+  final _trackingScrollController = TrackingScrollController();
+  Color _cartColor = Colors.white;
+  double _opacity = 1;
+  double _offset = 0;
+
+  final List<String> _grade = ["HG", "RG", "MG", "PG", "SD", "Other"];
+
+  @override
+  void initState() {
+    _trackingScrollController.addListener(() {
+      _offset = double.parse(_trackingScrollController.offset.toStringAsFixed(0)) / 100;
+      if (_offset >= 0 && _offset <= 1) {
+        setState(() {
+          _opacity = 1 - _offset;
+        });
+      } else {
+        if (_offset > 1) {
+          setState(() {
+            _cartColor = Colors.black;
+            _opacity = 0;
+          });
+        } else {
+          setState(() {
+            _cartColor = Colors.white;
+            _opacity = 1;
+          });
+        }
+      }
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFF0079FF),
-      child: BlocConsumer<LayoutBloc, LayoutState>(
-        builder: (context, state) {
-          return MyLoading(
-            isLoading: false,
-            child: SafeArea(
-              bottom: false,
-              child: Scaffold(
-                appBar: AppBar(
-                  backgroundColor: const Color(0xFF0079FF),
-                  actions: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.shopping_cart_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+    return BlocConsumer<LayoutBloc, LayoutState>(
+      builder: (context, state) {
+        return MyLoading(
+          isLoading: false,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                "My Gunpla",
+                style: TextStyle(
+                  color: _cartColor,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
                 ),
-                body: pages(state.index),
-                floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-                floatingActionButton: SizedBox(
-                  height: 68,
-                  width: 68,
-                  child: FloatingActionButton(
-                    backgroundColor: const Color(0xFF0079FF),
-                    elevation: 6,
-                    onPressed: () {
-                      context.read<LayoutBloc>().add(OnChangePageLayoutEvent(2));
-                    },
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 3,
-                        color: state.index == 2 ? const Color(0xFF0079FF) : Colors.white,
+              ),
+              systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.black),
+              surfaceTintColor: Colors.white,
+              backgroundColor: Colors.blue[900]!.withOpacity(_opacity),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: Stack(
+                    children: [
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.shopping_cart_outlined,
+                          color: _cartColor,
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: const Icon(
-                      Icons.list,
-                      size: 38,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                bottomNavigationBar: Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 10,
-                        color: Colors.grey.withOpacity(0.3),
-                      ),
+                      Positioned(
+                        right: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            border: Border.all(
+                              color: Colors.white,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 22,
+                            minHeight: 22,
+                          ),
+                          child: const Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 3,
+                              ),
+                              child: Text(
+                                "12",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
-                  child: BottomAppBar(
-                    elevation: 0,
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            MaterialButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              minWidth: 68,
-                              onPressed: () {
-                                context.read<LayoutBloc>().add(OnChangePageLayoutEvent(0));
-                              },
-                              child: Icon(
-                                Icons.home,
-                                color: state.index == 0 ? const Color(0xFF0079FF) : Colors.grey,
-                              ),
-                            ),
-                            MaterialButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              minWidth: 68,
-                              onPressed: () {
-                                context.read<LayoutBloc>().add(OnChangePageLayoutEvent(1));
-                              },
-                              child: Icon(
-                                Icons.search,
-                                color: state.index == 1 ? const Color(0xFF0079FF) : Colors.grey,
-                              ),
-                            ),
-                          ],
+                ),
+              ],
+            ),
+            body: SingleChildScrollView(
+              controller: _trackingScrollController,
+              child: SizedBox(
+                height: 1500,
+                width: double.infinity,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MyImageSlider(
+                        height: 190,
+                        children: [
+                          Image.network(
+                            "https://images.squarespace-cdn.com/content/v1/591452c0414fb58e825ed51e/3875f6ec-2da0-4445-a40c-c576ccb536fb/Wide+Banner+%287%29.jpg",
+                            fit: BoxFit.fitWidth,
+                          ),
+                          Image.network(
+                            "https://bandai-hobby.net/global/images/top/banner_gunplanavigationcatalog2023_eng.jpg",
+                            fit: BoxFit.fitWidth,
+                          ),
+                          Image.network(
+                            "https://bandai-hobby.net/global/images/top/banner_gunplanavigationcatalog2023_eng.jpg",
+                            fit: BoxFit.fitWidth,
+                          ),
+                          Image.network(
+                            "https://bandai-hobby.net/global/images/top/banner_gunplanavigationcatalog2023_eng.jpg",
+                            fit: BoxFit.fitWidth,
+                          ),
+                          Image.network(
+                            "https://bandai-hobby.net/global/images/top/banner_gunplanavigationcatalog2023_eng.jpg",
+                            fit: BoxFit.fitWidth,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      const Text(
+                        "Categories",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Row(
-                          children: [
-                            MaterialButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              minWidth: 68,
-                              onPressed: () {
-                                context.read<LayoutBloc>().add(OnChangePageLayoutEvent(3));
-                              },
-                              child: Icon(
-                                Icons.chat_bubble,
-                                color: state.index == 3 ? const Color(0xFF0079FF) : Colors.grey,
-                              ),
+                      ),
+                      const SizedBox(height: 18),
+                      SizedBox(
+                        height: 80,
+                        child: ListView.builder(
+                          clipBehavior: Clip.none,
+                          shrinkWrap: true,
+                          itemCount: _grade.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                Container(
+                                  width: 64,
+                                  height: 64,
+                                  margin: const EdgeInsets.only(right: 12),
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      begin: AlignmentDirectional.topCenter,
+                                      end: AlignmentDirectional.bottomCenter,
+                                      colors: [
+                                        Color(0xFFEBD197),
+                                        Color(0xFFD4AF37),
+                                        Color(0xFFFFFFFF),
+                                        Color(0xFFB8860D),
+                                        Color(0xFF996515),
+                                      ],
+                                    ),
+                                    border: Border.all(
+                                      width: 2,
+                                      color: Colors.black,
+                                    ),
+                                    borderRadius: BorderRadius.circular(108),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      _grade[index],
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        shadows: [
+                                          Shadow(
+                                            offset: Offset(2, 2),
+                                            blurRadius: 1,
+                                            color: Colors.white,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "New Arrivals",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
-                            MaterialButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              minWidth: 68,
-                              onPressed: () {
-                                context.read<LayoutBloc>().add(OnChangePageLayoutEvent(4));
-                              },
-                              child: Icon(
-                                Icons.person,
-                                color: state.index == 4 ? const Color(0xFF0079FF) : Colors.grey,
-                              ),
+                          ),
+                          Text(
+                            "View All  >",
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ],
-                        )
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-          );
-        },
-        listener: (context, state) {},
-      ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+            floatingActionButton: SizedBox(
+              height: 68,
+              width: 68,
+              child: FloatingActionButton(
+                backgroundColor: Colors.blue[900],
+                elevation: 6,
+                onPressed: () {
+                  context.read<LayoutBloc>().add(OnChangePageLayoutEvent(2));
+                },
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                    width: 3,
+                    color: state.index == 2 ? Colors.blue[900]! : Colors.white,
+                  ),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: const Icon(
+                  Icons.list,
+                  size: 38,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 10,
+                    color: Colors.grey.withOpacity(0.3),
+                  ),
+                ],
+              ),
+              child: BottomAppBar(
+                elevation: 0,
+                height: 60,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          minWidth: 68,
+                          onPressed: () {
+                            context.read<LayoutBloc>().add(OnChangePageLayoutEvent(0));
+                          },
+                          child: Icon(
+                            Icons.home,
+                            color: state.index == 0 ? Colors.blue[900] : Colors.grey,
+                          ),
+                        ),
+                        MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          minWidth: 68,
+                          onPressed: () {
+                            context.read<LayoutBloc>().add(OnChangePageLayoutEvent(1));
+                          },
+                          child: Icon(
+                            Icons.search,
+                            color: state.index == 1 ? Colors.blue[900] : Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          minWidth: 68,
+                          onPressed: () {
+                            context.read<LayoutBloc>().add(OnChangePageLayoutEvent(3));
+                          },
+                          child: Icon(
+                            Icons.chat_bubble,
+                            color: state.index == 3 ? Colors.blue[900] : Colors.grey,
+                          ),
+                        ),
+                        MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          minWidth: 68,
+                          onPressed: () {
+                            context.read<LayoutBloc>().add(OnChangePageLayoutEvent(4));
+                          },
+                          child: Icon(
+                            Icons.person,
+                            color: state.index == 4 ? Colors.blue[900] : Colors.grey,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      listener: (context, state) {},
     );
   }
 }
