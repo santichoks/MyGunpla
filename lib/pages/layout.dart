@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_gunpla/blocs/layout.dart';
-import 'package:my_gunpla/common/constants.dart';
-import 'package:my_gunpla/common/storage.dart';
+import 'package:my_gunpla/widgets/card.dart';
 import 'package:my_gunpla/widgets/image_slider.dart';
 import 'package:my_gunpla/widgets/loading.dart';
 
@@ -20,7 +19,25 @@ class _LayoutState extends State<Layout> {
   double _opacity = 1;
   double _offset = 0;
 
-  final List<String> _grade = ["HG", "RG", "MG", "PG", "SD", "Other"];
+  final _grade = ["HG", "RG", "MG", "PG", "SD", "MEGA", "Other"];
+  final _list = [
+    {
+      "src": "https://bandai-hobby.net/images/153_1404_s_oec4f9ci5m8sljikee16z934028i.jpg",
+      "title": "RX-78-02 Gundam",
+      "grade": "MASTER GRADE",
+      "scale": "(MG) 1/100",
+      "price": 3990,
+      "isFavorite": true,
+    },
+    {
+      "src": "https://bandai-hobby.net/images/153_4658_s_p568ql57g7ei9oxwqxxj6pj38olz.jpg",
+      "title": "Double Zeta Gundam",
+      "grade": "MASTER GRADE",
+      "scale": "(MG) 1/100",
+      "price": 2990,
+      "isFavorite": false,
+    },
+  ];
 
   @override
   void initState() {
@@ -181,32 +198,36 @@ class _LayoutState extends State<Layout> {
                                       colors: [
                                         Color(0xFFEBD197),
                                         Color(0xFFD4AF37),
-                                        Color(0xFFFFFFFF),
+                                        Color(0xFFFCF6BA),
                                         Color(0xFFB8860D),
                                         Color(0xFF996515),
                                       ],
                                     ),
                                     border: Border.all(
-                                      width: 2,
+                                      width: 1,
                                       color: Colors.black,
                                     ),
                                     borderRadius: BorderRadius.circular(108),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.grey,
+                                        blurRadius: 1,
+                                        offset: Offset(2, 2),
+                                      ),
+                                    ],
                                   ),
                                   child: Center(
-                                    child: Text(
-                                      _grade[index],
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        shadows: [
-                                          Shadow(
-                                            offset: Offset(2, 2),
-                                            blurRadius: 1,
-                                            color: Colors.white,
+                                    child: Stack(
+                                      children: [
+                                        Text(
+                                          _grade[index],
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w900,
                                           ),
-                                        ],
-                                      ),
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -237,6 +258,28 @@ class _LayoutState extends State<Layout> {
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 18),
+                      GridView.builder(
+                        itemCount: _list.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisExtent: 310,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                        itemBuilder: (context, index) {
+                          return MyCard(
+                            _list[index]["src"]!.toString(),
+                            title: _list[index]["title"]!.toString(),
+                            grade: _list[index]["grade"]!.toString(),
+                            scale: _list[index]["scale"]!.toString(),
+                            price: _list[index]["price"]! as num,
+                            isFavorite: _list[index]["isFavorite"]! as bool,
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -352,76 +395,4 @@ class _LayoutState extends State<Layout> {
       listener: (context, state) {},
     );
   }
-}
-
-void clearToken() {
-  Storage.remove(Constants.ACCESS_TOKEN);
-  Storage.remove(Constants.REFRESH_TOKEN);
-}
-
-Widget pages(int selected) {
-  final pages = [
-    const Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Home", style: TextStyle(fontSize: 24)),
-          IconButton(
-            onPressed: clearToken,
-            icon: Icon(Icons.delete_sweep),
-          )
-        ],
-      ),
-    ),
-    const Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Search", style: TextStyle(fontSize: 24)),
-          IconButton(
-            onPressed: clearToken,
-            icon: Icon(Icons.delete_sweep),
-          )
-        ],
-      ),
-    ),
-    const Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Category", style: TextStyle(fontSize: 24)),
-          IconButton(
-            onPressed: clearToken,
-            icon: Icon(Icons.delete_sweep),
-          )
-        ],
-      ),
-    ),
-    const Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Chat", style: TextStyle(fontSize: 24)),
-          IconButton(
-            onPressed: clearToken,
-            icon: Icon(Icons.delete_sweep),
-          )
-        ],
-      ),
-    ),
-    const Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Profile", style: TextStyle(fontSize: 24)),
-          IconButton(
-            onPressed: clearToken,
-            icon: Icon(Icons.delete_sweep),
-          )
-        ],
-      ),
-    ),
-  ];
-
-  return pages[selected];
 }
