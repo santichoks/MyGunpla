@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MyImageSlider extends StatefulWidget {
-  final List<Image> children;
+  final List<Widget> children;
   final double height;
 
   const MyImageSlider({super.key, required this.children, this.height = 160});
@@ -28,15 +28,12 @@ class _MyImageSliderState extends State<MyImageSlider> {
               });
             },
             itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: widget.children[index % widget.children.length],
-              );
+              return widget.children[index % widget.children.length];
             },
           ),
         ),
         Positioned(
-          bottom: 0,
+          bottom: 18,
           child: Row(
             children: [
               for (var i = 0; i < widget.children.length; i++)
@@ -46,7 +43,7 @@ class _MyImageSliderState extends State<MyImageSlider> {
                   margin: const EdgeInsets.only(right: 6),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: currentIndex == i ? Colors.blueAccent[700] : Colors.grey,
+                    color: currentIndex == i ? Colors.blueAccent[700] : Colors.white,
                   ),
                 ),
             ],

@@ -5,6 +5,7 @@ import 'package:my_gunpla/blocs/sign_in.dart';
 import 'package:my_gunpla/blocs/sign_up.dart';
 import 'package:my_gunpla/common/constants.dart';
 import 'package:my_gunpla/common/storage.dart';
+import 'package:my_gunpla/pages/detail.dart';
 import 'package:my_gunpla/pages/layout.dart';
 import 'package:my_gunpla/pages/sign_in.dart';
 import 'package:my_gunpla/pages/sign_up.dart';
@@ -49,6 +50,8 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(builder: (context) => const SignUp());
             case "/application":
               return MaterialPageRoute(builder: (context) => const Layout());
+            case "/detail":
+              return MaterialPageRoute(builder: (context) => const Detail());
             default:
               return MaterialPageRoute(builder: (context) => const Layout());
           }

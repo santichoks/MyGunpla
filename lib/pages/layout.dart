@@ -19,7 +19,7 @@ class _LayoutState extends State<Layout> {
   double _opacity = 1;
   double _offset = 0;
 
-  final _grade = ["HG", "RG", "MG", "PG", "SD", "MEGA", "Other"];
+  final _categories = ["HG", "MG", "PG", "RG", "SD", "HGUC", "MGEX", "MGSD", "MEGA", "Other"];
   final _list = [
     {
       "src": "https://bandai-hobby.net/images/153_1404_s_oec4f9ci5m8sljikee16z934028i.jpg",
@@ -27,6 +27,7 @@ class _LayoutState extends State<Layout> {
       "grade": "MASTER GRADE",
       "scale": "(MG) 1/100",
       "price": 3990,
+      "discount": 0.15,
       "isFavorite": true,
     },
     {
@@ -35,6 +36,25 @@ class _LayoutState extends State<Layout> {
       "grade": "MASTER GRADE",
       "scale": "(MG) 1/100",
       "price": 2990,
+      "discount": 0,
+      "isFavorite": false,
+    },
+    {
+      "src": "https://bandai-hobby.net/images/153_3856_s_rasv2tj4xxdffh4w217cocno0jqb.jpg",
+      "title": "RX-78-2 Gundam",
+      "grade": "PERFECT GRADE",
+      "scale": "(PG) 1/60",
+      "price": 7790,
+      "discount": 0.15,
+      "isFavorite": false,
+    },
+    {
+      "src": "https://bandai-hobby.net/images/153_3858_s_u1nbhocly6o73ebe7apsa6ryqghg.jpg",
+      "title": "MS-06S Char's Zaku 2",
+      "grade": "PERFECT GRADE",
+      "scale": "(PG) 1/60",
+      "price": 6500,
+      "discount": 0.15,
       "isFavorite": false,
     },
   ];
@@ -138,7 +158,7 @@ class _LayoutState extends State<Layout> {
                 height: 1500,
                 width: double.infinity,
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  margin: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -167,7 +187,7 @@ class _LayoutState extends State<Layout> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 18),
+                      const SizedBox(height: 12),
                       const Text(
                         "Categories",
                         style: TextStyle(
@@ -178,18 +198,18 @@ class _LayoutState extends State<Layout> {
                       ),
                       const SizedBox(height: 18),
                       SizedBox(
-                        height: 80,
+                        height: 60,
                         child: ListView.builder(
                           clipBehavior: Clip.none,
                           shrinkWrap: true,
-                          itemCount: _grade.length,
+                          itemCount: _categories.length,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
                             return Column(
                               children: [
                                 Container(
-                                  width: 64,
-                                  height: 64,
+                                  width: 52,
+                                  height: 52,
                                   margin: const EdgeInsets.only(right: 12),
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(
@@ -205,13 +225,13 @@ class _LayoutState extends State<Layout> {
                                     ),
                                     border: Border.all(
                                       width: 1,
-                                      color: Colors.black,
+                                      color: Colors.grey,
                                     ),
                                     borderRadius: BorderRadius.circular(108),
                                     boxShadow: const [
                                       BoxShadow(
                                         color: Colors.grey,
-                                        blurRadius: 1,
+                                        blurRadius: 4,
                                         offset: Offset(2, 2),
                                       ),
                                     ],
@@ -220,11 +240,11 @@ class _LayoutState extends State<Layout> {
                                     child: Stack(
                                       children: [
                                         Text(
-                                          _grade[index],
+                                          _categories[index],
                                           style: const TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 12,
                                             color: Colors.black,
-                                            fontWeight: FontWeight.w900,
+                                            fontWeight: FontWeight.w800,
                                           ),
                                         )
                                       ],
@@ -277,6 +297,7 @@ class _LayoutState extends State<Layout> {
                             grade: _list[index]["grade"]!.toString(),
                             scale: _list[index]["scale"]!.toString(),
                             price: _list[index]["price"]! as num,
+                            discount: _list[index]["discount"]! as num,
                             isFavorite: _list[index]["isFavorite"]! as bool,
                           );
                         },
