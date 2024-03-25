@@ -8,10 +8,11 @@
 <br/>
 <p align="center">
   <img src="./assets/github/example_01.png" width="30%">
+  <img src="./assets/github/example_02.png" width="30%">
 </p>
 <p align="center">
-  <img src="./assets/github/example_02.png" width="30%">
   <img src="./assets/github/example_03.png" width="30%">
+  <img src="./assets/github/example_04.png" width="30%">
 </p>
 
 <h3>Introduction</h3>
