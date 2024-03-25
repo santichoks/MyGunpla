@@ -62,7 +62,7 @@ class _LayoutState extends State<Layout> {
   @override
   void initState() {
     _trackingScrollController.addListener(() {
-      _offset = double.parse(_trackingScrollController.offset.toStringAsFixed(0)) / 100;
+      _offset = double.parse(_trackingScrollController.offset.toStringAsFixed(0)) / 150;
       if (_offset >= 0 && _offset <= 1) {
         setState(() {
           _opacity = 1 - _offset;
@@ -101,7 +101,10 @@ class _LayoutState extends State<Layout> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.black),
+              systemOverlayStyle: const SystemUiOverlayStyle(
+                systemNavigationBarContrastEnforced: true,
+                systemStatusBarContrastEnforced: true,
+              ),
               surfaceTintColor: Colors.white,
               backgroundColor: Colors.blue[900]!.withOpacity(_opacity),
               actions: [
@@ -154,8 +157,8 @@ class _LayoutState extends State<Layout> {
             ),
             body: SingleChildScrollView(
               controller: _trackingScrollController,
+              padding: const EdgeInsets.only(bottom: 48),
               child: SizedBox(
-                height: 1500,
                 width: double.infinity,
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(16, 10, 16, 0),
