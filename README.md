@@ -2,7 +2,7 @@
 
 <div align="center">
   
-  ***<p style="text-align: center;">⚠️ Coming Soon - Inprogress 15%</p>***
+  ***<p style="text-align: center;">⚠️ Coming Soon - Inprogress 25%</p>***
   
 </div>
 <br/>
